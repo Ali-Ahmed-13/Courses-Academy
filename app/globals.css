@@ -1,0 +1,15 @@
+@import 'tailwindcss';
+
+@theme {
+  --color-primary: #5b6bc8;
+  --color-hover: #232e76;
+  --color-Dark: #64748b;
+  --color-Text: oklch(98.4% 0.003 247.858);
+}
+/*
+Primary: indigo-600
+Primary Hover: indigo-700
+Dark: slate-900
+Gray Text: slate-500
+BG: slate-50
+*/

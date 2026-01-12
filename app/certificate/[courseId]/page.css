@@ -1,0 +1,22 @@
+@media print {
+  @page {
+    margin: 0;
+  }
+
+  body {
+    margin: 1.6cm;
+  }
+
+  nav,
+  footer,
+  .print-button {
+    display: none !important;
+  }
+  #certificate-area {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+    width: 297mm; /* عرض A4 بالعرض */
+    height: 210mm; /* طول A4 بالعرض */
+    margin: 0 auto;
+  }
+}
