@@ -55,6 +55,4 @@ build/
 .env.production
 .env.development
 
-\app\_utils\*
-\app\_utils*
-\app\_utils
+app/_utils/
