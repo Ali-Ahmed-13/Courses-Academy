@@ -54,5 +54,3 @@ build/
 .env.local
 .env.production
 .env.development
-
-app/_utils/
