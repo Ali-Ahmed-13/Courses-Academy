@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:1337/api';
+const API_URL = process.env.NEXT_PUBLIC_API_KEY;
 
 export let api = axios.create({
   baseURL: API_URL,
