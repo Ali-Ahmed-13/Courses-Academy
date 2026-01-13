@@ -11,7 +11,7 @@ export default function CourseCard({ course }) {
       <div className="bg-white rounded-xl shadow-sm hover:shadow-lg transition overflow-hidden cursor-pointer">
         {imageUrl && (
           <img
-            src={`http://localhost:1337${imageUrl}`}
+            src={imageUrl}
             alt={title}
             className="h-44 w-full object-cover"
           />
