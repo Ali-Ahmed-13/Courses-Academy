@@ -66,7 +66,7 @@ const Header = () => {
               </SignedIn>
               <Link
                 href={'/dashboard'}
-                className="border border-slate-300 text-Text hover:border-indigo-600 hover:text-gray-300  px-3 py-1  md:px-6 md:py-3 rounded-lg font-medium transition"
+                className="border border-slate-300 text-Text hover:border-indigo-600 hover:text-gray-300 text-sm  px-2 py-1 md:text-md  md:px-6 md:py-3 rounded-lg font-medium transition"
               >
                 Go To Dashboard
               </Link>
@@ -76,7 +76,7 @@ const Header = () => {
                   onClick={() => setIsOpen(!isOpen)}
                   className="rounded-md bg-gray-100 p-2 text-gray-600 transition hover:bg-gray-200"
                 >
-                  {isOpen ? <X size={24} /> : <Menu size={24} />}
+                  {isOpen ? <X size={20} /> : <Menu size={20} />}
                 </button>
               </div>
             </div>
