@@ -66,7 +66,7 @@ const Header = () => {
               </SignedIn>
               <Link
                 href={'/dashboard'}
-                className="border border-slate-300 text-Text hover:border-indigo-600 hover:text-gray-300   px-6 py-3 rounded-lg font-medium transition"
+                className="border border-slate-300 text-Text hover:border-indigo-600 hover:text-gray-300  px-3 py-1  md:px-6 md:py-3 rounded-lg font-medium transition"
               >
                 Go To Dashboard
               </Link>
