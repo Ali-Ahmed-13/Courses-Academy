@@ -67,16 +67,16 @@ export default async function LessonPage({ params }) {
                 />
 
                 {lesson.videoUrl && (
-                  <iframe
-                    width="560"
-                    height="315"
-                    src={`https://www.youtube.com/embed/${lesson.videoUrl}`}
-                    title="Video"
-                    className="rounded-lg shadow-lg"
-                    allowFullScreen
-                  ></iframe>
+                  <div className="w-full max-w-4xl aspect-video rounded-xl overflow-hidden shadow-2xl border bg-black">
+                    <iframe
+                      src={`https://www.youtube.com/embed/${lesson.videoUrl}`}
+                      title="Lesson Video"
+                      className="w-full h-full"
+                      allowFullScreen
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    ></iframe>
+                  </div>
                 )}
-
                 <div className="flex justify-between items-center flex-col w-full max-w-140 mt-8">
                   {prevLesson && (
                     <Link
