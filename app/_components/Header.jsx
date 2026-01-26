@@ -15,6 +15,7 @@ const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   const navLinks = [
+    { name: 'Home', href: '/' },
     { name: 'Courses', href: '/courses' },
     { name: 'About', href: '/about' },
     { name: 'Contact', href: 'contact' },
