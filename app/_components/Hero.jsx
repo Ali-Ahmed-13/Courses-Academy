@@ -1,8 +1,7 @@
 'use client';
 
 import Image from 'next/image';
-import { motion } from 'framer-motion';
-import { usePathname } from 'next/navigation';
+import { m } from 'framer-motion';
 import Link from 'next/link';
 
 export default function Hero() {
@@ -16,7 +15,7 @@ export default function Hero() {
 
       <div className="max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-12 items-center">
         {/* Left */}
-        <motion.div
+        <m.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
@@ -37,19 +36,19 @@ export default function Hero() {
 
           <div className="flex gap-4 mt-8">
             <Link href="/courses">
-              <motion.button
+              <m.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 className="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-lg font-medium transition"
               >
                 Browse Courses
-              </motion.button>
+              </m.button>
             </Link>
           </div>
-        </motion.div>
+        </m.div>
 
         {/* Right Image */}
-        <motion.div
+        <m.div
           initial={{ opacity: 0, x: 40 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.6, delay: 0.2 }}
@@ -62,8 +61,9 @@ export default function Hero() {
             height={420}
             className="rounded-xl"
             priority
+            sizes="(max-width: 768px) 100vw, 520px"
           />
-        </motion.div>
+        </m.div>
       </div>
     </section>
   );

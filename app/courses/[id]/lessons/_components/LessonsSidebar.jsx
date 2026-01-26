@@ -34,7 +34,7 @@ export default function LessonsSidebar({
         className={`
         fixed inset-y-0 left-0 z-40 w-80 bg-white border-r p-5 transition-transform duration-300 ease-in-out transform
         ${isOpen ? 'translate-x-0' : '-translate-x-full'}
-        md:relative md:translate-x-0 md:flex-shrink-0 h-screen overflow-y-auto
+        md:relative md:translate-x-0 md:shrink-0 h-screen overflow-y-auto
       `}
       >
         <h2 className="font-bold text-xl mb-5 mt-10 md:mt-0">Course Content</h2>

@@ -27,12 +27,12 @@ const Header = () => {
           <div className="flex-1 md:flex md:items-center md:gap-12">
             <Link className="block text-teal-600" href="/">
               <span className="sr-only">Home</span>
-              <Image src={'/logosvg.png'} width={100} height={100} alt="Logo" />
+              <Image src={'/logosvg.svg'} width={100} height={100} alt="Logo" />
             </Link>
           </div>
 
           <div className="md:flex md:items-center md:gap-12">
-            <nav aria-label="Global" className="hidden md:block">
+            <nav className="hidden md:block" aria-label="Main Navigation">
               <ul className="flex items-center gap-6 text-sm">
                 {navLinks.map((link) => (
                   <li key={link.name}>

@@ -1,6 +1,6 @@
 /** @type {import('next').Config} */
 const nextConfig = {
-  transpilePackages: ['@clerk/nextjs', '@clerk/shared'],
+  // transpilePackages: ['@clerk/nextjs', '@clerk/shared'],
   experimental: {
     turbo: {
       resolveAlias: {

@@ -3,6 +3,7 @@ import './globals.css';
 import Header from './_components/Header.jsx';
 import Footer from './_components/Footer.jsx';
 import { ClerkProvider } from '@clerk/nextjs';
+import { domAnimation, LazyMotion } from 'framer-motion';
 const geistSans = Geist({
   variable: '--font-geist-sans',
   subsets: ['latin'],
@@ -22,11 +23,13 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-slate-50 text-slate-500 w-lvw h-lvh overflow-x-hidden`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-slate-50 text-slate-500 min-h-screen overflow-x-hidden`}
       >
         <ClerkProvider>
           <Header />
-          {children}
+          <main>
+            <LazyMotion features={domAnimation}>{children}</LazyMotion>
+          </main>
           <Footer />
         </ClerkProvider>
       </body>

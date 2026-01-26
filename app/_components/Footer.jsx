@@ -1,4 +1,3 @@
-'use client';
 
 import React from 'react';
 import Link from 'next/link';
@@ -22,7 +21,7 @@ const Footer = () => {
     <footer className="bg-Dark relative bottom-0 left-0 w-full h-auto">
       <div className="mx-auto max-w-5xl px-4 py-1 sm:px-6 lg:px-8">
         <div className="flex justify-center">
-          <Image src={'/logosvg.png'} width={100} height={100} alt="Logo" />
+          <Image src={'/logosvg.svg'} width={100} height={100} alt="Logo" />
         </div>
 
         <nav className="mt-1">
