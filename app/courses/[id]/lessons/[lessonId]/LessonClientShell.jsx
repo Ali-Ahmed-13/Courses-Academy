@@ -1,4 +1,3 @@
-// app/courses/[id]/lessons/[lessonId]/LessonClientShell.jsx
 'use client';
 
 import { useEffect, useState } from 'react';
@@ -54,7 +53,8 @@ export default function LessonClientShell({
   }
 
   return (
-    <>
+    <div className="flex w-full min-h-screen">
+      {/* Sidebar */}
       <div className="hidden md:block w-65 shrink-0">
         <LessonsSidebar
           id={courseId}
@@ -64,7 +64,8 @@ export default function LessonClientShell({
         />
       </div>
 
-      <main className="flex flex-col gap-4 items-center w-full p-10">
+      {/* Main content */}
+      <main className="flex-1 flex flex-col gap-4 items-center w-full p-10">
         {isLocked ? (
           <div className="flex flex-col items-center mt-20 gap-4">
             <h2 className="text-2xl font-bold text-slate-800">
@@ -76,8 +77,10 @@ export default function LessonClientShell({
           </div>
         ) : (
           <>
+            {/* Lesson title */}
             <h1 className="text-3xl font-bold mb-4">{lesson.title}</h1>
 
+            {/* Lesson progress (reserved height) */}
             <div className="h-16 w-full max-w-4xl">
               {progressData ? (
                 <LessonProgress
@@ -91,6 +94,7 @@ export default function LessonClientShell({
               )}
             </div>
 
+            {/* Video */}
             {lesson.videoUrl && (
               <div className="w-full max-w-4xl aspect-video rounded-xl overflow-hidden shadow-2xl border bg-black">
                 <iframe
@@ -104,64 +108,64 @@ export default function LessonClientShell({
               </div>
             )}
 
-            <div className="flex flex-col items-center w-full mt-8">
-              <div className="min-h-14">
+            {/* Navigation & actions */}
+            <div className="flex flex-col items-center w-full mt-8 gap-6">
+              {/* Previous lesson */}
+              <div className="min-h-15 flex items-center justify-center">
                 {prevLesson && (
                   <Link
                     href={`/courses/${courseId}/lessons/${prevLesson.id}`}
-                    className="px-5 py-3 rounded-xl border hover:bg-slate-100 m-2"
+                    className="px-5 py-3 rounded-xl border hover:bg-slate-100 font-bold"
                   >
                     ← {prevLesson.title}
                   </Link>
                 )}
               </div>
 
-              <div className="w-full flex flex-col items-center gap-6 mt-6">
-                {/* Next lesson area */}
-                <div className="min-h-15 flex items-center justify-center">
-                  {nextLesson ? (
-                    <Link
-                      href={`/courses/${courseId}/lessons/${nextLesson.id}`}
-                      className="px-5 py-3 rounded-xl bg-indigo-600 text-white font-bold"
-                    >
-                      Next Lesson →
-                    </Link>
-                  ) : (
-                    <button
-                      className="px-5 py-3 rounded-xl bg-green-600 text-white font-bold cursor-default"
-                      disabled
-                    >
-                      Course Lessons Completed! 🎉
-                    </button>
-                  )}
-                </div>
+              {/* Next lesson / completion */}
+              <div className="min-h-15 flex items-center justify-center">
+                {nextLesson ? (
+                  <Link
+                    href={`/courses/${courseId}/lessons/${nextLesson.id}`}
+                    className="px-5 py-3 rounded-xl bg-indigo-600 text-white font-bold"
+                  >
+                    Next Lesson →
+                  </Link>
+                ) : (
+                  <button
+                    className="px-5 py-3 rounded-xl bg-green-600 text-white font-bold cursor-default"
+                    disabled
+                  >
+                    Course Lessons Completed! 🎉
+                  </button>
+                )}
+              </div>
 
-                {/* Quiz area (reserved space) */}
-                <div className="w-full min-h-80 border-t pt-10 flex flex-col items-center">
-                  {hasQuiz && (
-                    <>
-                      <h2 className="text-2xl font-bold mb-5">Final Exam 📝</h2>
-                      <Quiz questions={quiz} />
-                    </>
-                  )}
-                </div>
+              {/* Quiz area */}
+              <div className="w-full min-h-80 border-t pt-10 flex flex-col items-center">
+                {hasQuiz && (
+                  <>
+                    <h2 className="text-2xl font-bold mb-5">Final Exam 📝</h2>
+                    <Quiz questions={quiz} />
+                  </>
+                )}
+              </div>
 
-                {/* Certificate area (reserved space) */}
-                <div className="min-h-22.5 flex items-center justify-center">
-                  {progressData?.certificateIssued && (
-                    <Link
-                      href={`/certificate/${courseId}`}
-                      className="p-5 rounded-xl bg-indigo-700 text-white hover:bg-indigo-800 font-bold"
-                    >
-                      Get the Certificate 🎓
-                    </Link>
-                  )}
-                </div>
+              {/* Certificate area */}
+              <div className="min-h-22.5 flex items-center justify-center">
+                {progressData?.certificateIssued && (
+                  <Link
+                    href={`/certificate/${courseId}`}
+                    className="p-5 rounded-xl bg-indigo-700 text-white hover:bg-indigo-800 font-bold"
+                  >
+                    Get the Certificate 🎓
+                  </Link>
+                )}
               </div>
             </div>
           </>
         )}
       </main>
-    </>
+    </div>
   );
 }
