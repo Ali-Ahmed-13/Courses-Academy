@@ -14,9 +14,11 @@ import {
 import { useUser } from '@clerk/nextjs';
 import { getProgress } from '@/app/_utils/progressApis';
 import LessonProgress from '../_components/LessonProgress';
-import Quiz from '../_components/Quiz';
 
 const LessonsSidebar = dynamic(() => import('../_components/LessonsSidebar'), {
+  ssr: false,
+});
+const Quiz = dynamic(() => import('../_components/Quiz'), {
   ssr: false,
 });
 export default function LessonClientShell({
@@ -157,6 +159,7 @@ export default function LessonClientShell({
 
             {/* Video Player Section */}
 
+            
             {lesson.videoUrl && (
               <div className="w-full aspect-video rounded-3xl overflow-hidden shadow-2xl bg-black border-4 border-white ring-1 ring-slate-200">
                 <iframe
