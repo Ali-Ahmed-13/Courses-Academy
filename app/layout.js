@@ -3,7 +3,6 @@ import './globals.css';
 import Header from './_components/Header.jsx';
 import Footer from './_components/Footer.jsx';
 import { ClerkProvider } from '@clerk/nextjs';
-import { domAnimation, LazyMotion } from 'framer-motion';
 const geistSans = Geist({
   variable: '--font-geist-sans',
   subsets: ['latin'],
@@ -29,9 +28,7 @@ export default function RootLayout({ children }) {
       >
         <ClerkProvider>
           <Header />
-          <main>
-            <LazyMotion features={domAnimation}>{children}</LazyMotion>
-          </main>
+          <main>{children}</main>
           <Footer />
         </ClerkProvider>
       </body>
