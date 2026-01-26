@@ -6,13 +6,13 @@ import { ClerkProvider } from '@clerk/nextjs';
 const geistSans = Geist({
   variable: '--font-geist-sans',
   subsets: ['latin'],
-  display: 'optional',
+  display: 'swap',
 });
 
 const geistMono = Geist_Mono({
   variable: '--font-geist-mono',
   subsets: ['latin'],
-  display: 'optional',
+  display: 'swap',
 });
 
 export const metadata = {
