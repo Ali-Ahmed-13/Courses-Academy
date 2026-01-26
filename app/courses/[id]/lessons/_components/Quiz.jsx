@@ -42,7 +42,7 @@ export default function Quiz({ questions = [], onComplete }) {
   if (showResult) {
     const percentage = (score / questions.length) * 100;
     return (
-      <div className="p-8 border rounded-2xl bg-white shadow-sm text-center w-full max-w-xl">
+      <div className="p-8  mx-auto rounded-2xl bg-white shadow-sm text-center w-full max-w-xl ">
         <h2 className="text-2xl font-bold mb-4">Quiz Result</h2>
         <div
           className={`text-5xl font-bold mb-4 ${

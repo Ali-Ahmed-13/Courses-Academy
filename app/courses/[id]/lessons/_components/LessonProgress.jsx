@@ -77,8 +77,8 @@ export default function LessonProgress({
   }, [lessonId, userId, courseId, router]);
 
   return (
-    <div className="mb-6 w-full max-w-md">
-      <div className="flex justify-between text-sm text-slate-500 mb-1">
+    <div className="mb-6 w-full mx-auto">
+      <div className="w-full flex justify-between text-sm text-slate-500 mb-1">
         <span>Course Progress</span>
         <span className="font-bold text-indigo-600">
           {Math.round(progress)}%
