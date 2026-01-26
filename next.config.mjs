@@ -7,11 +7,7 @@ const nextConfig = {
       },
     },
   },
-  modularizeImports: {
-    'lucide-react': {
-      transform: 'lucide-react/dist/esm/icons/{{member}}',
-    },
-  },
+  
 };
 
 export default nextConfig;
