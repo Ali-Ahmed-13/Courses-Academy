@@ -116,39 +116,47 @@ export default function LessonClientShell({
                 )}
               </div>
 
-              <div className="min-h-14">
-                {nextLesson ? (
-                  <Link
-                    href={`/courses/${courseId}/lessons/${nextLesson.id}`}
-                    className="px-5 py-3 rounded-xl bg-indigo-600 text-white m-2"
-                  >
-                    Next Lesson →
-                  </Link>
-                ) : (
-                  <>
-                    <button className="px-5 py-3 rounded-xl bg-green-600 text-white font-bold m-3 cursor-default">
+              <div className="w-full flex flex-col items-center gap-6 mt-6">
+                {/* Next lesson area */}
+                <div className="min-h-15 flex items-center justify-center">
+                  {nextLesson ? (
+                    <Link
+                      href={`/courses/${courseId}/lessons/${nextLesson.id}`}
+                      className="px-5 py-3 rounded-xl bg-indigo-600 text-white font-bold"
+                    >
+                      Next Lesson →
+                    </Link>
+                  ) : (
+                    <button
+                      className="px-5 py-3 rounded-xl bg-green-600 text-white font-bold cursor-default"
+                      disabled
+                    >
                       Course Lessons Completed! 🎉
                     </button>
+                  )}
+                </div>
 
-                    {hasQuiz && (
-                      <div className="mt-10 w-full min-h-75 border-t pt-10 flex flex-col items-center">
-                        <h2 className="text-2xl font-bold mb-5">
-                          Final Exam 📝
-                        </h2>
-                        <Quiz questions={quiz} />
-                      </div>
-                    )}
+                {/* Quiz area (reserved space) */}
+                <div className="w-full min-h-80 border-t pt-10 flex flex-col items-center">
+                  {hasQuiz && (
+                    <>
+                      <h2 className="text-2xl font-bold mb-5">Final Exam 📝</h2>
+                      <Quiz questions={quiz} />
+                    </>
+                  )}
+                </div>
 
-                    {progressData?.certificateIssued && (
-                      <Link
-                        href={`/certificate/${courseId}`}
-                        className="p-5 rounded-xl bg-indigo-700 text-white hover:bg-indigo-800 font-bold m-3"
-                      >
-                        Get the Certificate 🎓
-                      </Link>
-                    )}
-                  </>
-                )}
+                {/* Certificate area (reserved space) */}
+                <div className="min-h-22.5 flex items-center justify-center">
+                  {progressData?.certificateIssued && (
+                    <Link
+                      href={`/certificate/${courseId}`}
+                      className="p-5 rounded-xl bg-indigo-700 text-white hover:bg-indigo-800 font-bold"
+                    >
+                      Get the Certificate 🎓
+                    </Link>
+                  )}
+                </div>
               </div>
             </div>
           </>
