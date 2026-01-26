@@ -9,15 +9,15 @@ import Image from 'next/image';
 export default async function CoursePage({ params }) {
   const { id } = await params;
 
-  const user = await currentUser();
-
-  const courses = await fetchCourses();
+  const [user, courses] = await Promise.all([currentUser(), fetchCourses()]);
 
   const course = courses.find((c) => c.id === parseInt(id));
 
   const { title, slug, thumbnail } = course;
 
   const imageUrl = thumbnail?.medium?.url || thumbnail?.url;
+
+  const Url = process.env.NEXT_PUBLIC_S;
 
   if (!course) {
     notFound();
@@ -60,7 +60,7 @@ export default async function CoursePage({ params }) {
 
           {imageUrl && (
             <Image
-              src={`http://localhost:1337${imageUrl}`}
+              src={`${Url}${imageUrl}`}
               alt="title"
               width={150}
               height={130}
