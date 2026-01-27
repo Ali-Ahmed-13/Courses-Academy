@@ -1,19 +1,8 @@
-import { Geist, Geist_Mono } from 'next/font/google';
 import './globals.css';
 import Header from './_components/Header.jsx';
 import Footer from './_components/Footer.jsx';
 import { ClerkProvider } from '@clerk/nextjs';
-const geistSans = Geist({
-  variable: '--font-geist-sans',
-  subsets: ['latin'],
-  display: 'swap',
-});
-
-const geistMono = Geist_Mono({
-  variable: '--font-geist-mono',
-  subsets: ['latin'],
-  display: 'swap',
-});
+import { lato } from './fonts/font';
 
 export const metadata = {
   title: 'Home',
@@ -24,7 +13,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-slate-50 text-slate-500 min-h-screen overflow-x-hidden`}
+        className={`${lato.variable}  antialiased bg-slate-50 text-slate-500 min-h-screen overflow-x-hidden`}
       >
         <ClerkProvider>
           <Header />

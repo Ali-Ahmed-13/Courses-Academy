@@ -159,7 +159,6 @@ export default function LessonClientShell({
 
             {/* Video Player Section */}
 
-            
             {lesson.videoUrl && (
               <div className="w-full aspect-video rounded-3xl overflow-hidden shadow-2xl bg-black border-4 border-white ring-1 ring-slate-200">
                 <iframe
@@ -201,7 +200,7 @@ export default function LessonClientShell({
             {/* Improved Final Exam / Quiz Section */}
 
             {hasQuiz && (
-              <section className="mt-16 bg-white rounded-4xl border border-slate-200 shadow-sm overflow-hidden">
+              <section className="mt-16 bg-white rounded-4xl border border-slate-200 shadow-sm overflow-hidden w-auto">
                 <div className="bg-slate-900 p-8 text-white flex flex-col items-center sm:items-start sm:flex-row sm:justify-between gap-4">
                   <div>
                     <h2 className="text-2xl font-bold">Final Quiz 📝</h2>
@@ -216,7 +215,7 @@ export default function LessonClientShell({
                   </div>
                 </div>
 
-                <div className="p-6 md:p-10">
+                <div className="p-6 md:p-10 text-center">
                   <Quiz questions={quiz} />
                 </div>
               </section>
@@ -224,7 +223,7 @@ export default function LessonClientShell({
 
             {/* Certificate Section */}
 
-            {progressData?.certificateIssued && (
+            {progressData?.certificateIssued && hasQuiz && (
               <div className="py-10 flex justify-center">
                 <Link
                   href={`/certificate/${courseId}`}

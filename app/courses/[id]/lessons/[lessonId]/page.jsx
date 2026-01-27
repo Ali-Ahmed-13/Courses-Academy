@@ -25,7 +25,7 @@ export default async function LessonPage({ params }) {
         lessonId={lessonId}
         prevLesson={prevLesson}
         nextLesson={nextLesson}
-        hasQuiz={!!course.quiz}
+        hasQuiz={!!course.quiz && !nextLesson}
         quiz={course.quiz}
       />
     </div>

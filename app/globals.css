@@ -6,6 +6,10 @@
   --color-Dark: #64748b;
   --color-Text: oklch(98.4% 0.003 247.858);
 }
+body {
+  font-family: var(--font-lato), sans-serif;
+}
+
 /*
 Primary: indigo-600
 Primary Hover: indigo-700
