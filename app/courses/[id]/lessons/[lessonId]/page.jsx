@@ -1,4 +1,4 @@
-import { fetchCourseById } from '../../../../_utils/axios';
+import { fetchCourseById } from '@/app/_utils/axios';
 import LessonClientShell from './LessonClientShell';
 
 export default async function LessonPage({ params }) {

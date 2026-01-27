@@ -15,9 +15,10 @@ import { useUser } from '@clerk/nextjs';
 import { getProgress } from '@/app/_utils/progressApis';
 import LessonProgress from '../_components/LessonProgress';
 
-const LessonsSidebar = dynamic(() => import('../_components/LessonsSidebar'), {
-  ssr: false,
-});
+const LessonsSidebar = dynamic(
+  () => import('../_components/LessonsSidebar'),
+  {}
+);
 const Quiz = dynamic(() => import('../_components/Quiz'), {
   ssr: false,
 });
@@ -51,7 +52,9 @@ export default function LessonClientShell({
 
   if (!isLoaded) return <div className="min-h-screen bg-slate-50" />;
 
-  const currentIndex = lessons.findIndex((l) => l.id === lesson.id);
+  const currentIndex = lessons.findIndex(
+    (l) => Number(l.id) === Number(lesson.id)
+  );
 
   const isLocked =
     currentIndex > 0 &&
