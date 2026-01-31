@@ -6,10 +6,11 @@ export default function LessonVideo({ videoUrl }) {
   const [isPlaying, setIsPlaying] = useState(false);
 
   if (!videoUrl) return null;
-
   const videoId = videoUrl.split('?')[0].split('/').pop();
 
-  const thumbnailUrl = `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`;
+  // استخدام hqdefault لتقليل الحجم وتحسين الـ LCP
+  const thumbnailUrl = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
+
   return (
     <div className="w-full aspect-video rounded-3xl overflow-hidden shadow-2xl bg-black border-4 border-white ring-1 ring-slate-200 relative group">
       {!isPlaying ? (
@@ -20,6 +21,9 @@ export default function LessonVideo({ videoUrl }) {
           <img
             src={thumbnailUrl}
             alt="Video Thumbnail"
+            // إضافات جوهرية للأداء:
+            fetchPriority="high"
+            decoding="async"
             className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
           />
 
@@ -31,7 +35,7 @@ export default function LessonVideo({ videoUrl }) {
         </div>
       ) : (
         <iframe
-          src={`https://www.youtube.com/embed/${videoUrl}?autoplay=1`}
+          src={`https://www.youtube.com/embed/${videoId}?autoplay=1`}
           title="Lesson Video"
           className="w-full h-full"
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
