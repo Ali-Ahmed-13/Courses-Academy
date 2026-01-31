@@ -12,8 +12,6 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <link rel="preconnect" href="https://img.youtube.com" />
-      <link rel="preconnect" href="https://www.youtube.com" />
       <body
         className={`${lato.variable}  antialiased bg-slate-50 text-slate-500 min-h-screen overflow-x-hidden`}
       >
