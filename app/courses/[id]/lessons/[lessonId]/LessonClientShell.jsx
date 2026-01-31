@@ -8,24 +8,15 @@ import { useUser } from '@clerk/nextjs';
 import { getProgress } from '@/app/_utils/progressApis';
 import LessonHeader from '../_components/LessonHeader';
 import LessonNav from '../_components/LessonNav';
-
-const LessonVideo = dynamic(() => import('../_components/LessonVideo'), {
-  loading: () => (
-    <div className="w-full aspect-video bg-slate-200 animate-pulse rounded-3xl" />
-  ),
-  ssr: false,
-});
-const LessonProgress = dynamic(() => import('../_components/LessonProgress'), {
-  loading: () => <p>Loading Progress...</p>,
-  ssr: false,
-});
-const LessonsSidebar = dynamic(() => import('../_components/LessonsSidebar'), {
-  loading: () => <p>Loading Sidebar...</p>,
-  ssr: false,
-});
+import LessonVideo from './../_components/LessonVideo';
+import LessonProgress from './../_components/LessonProgress';
 
 const Quiz = dynamic(() => import('../_components/Quiz'), {
-  loading: () => <p>Loading Quiz...</p>,
+  ssr: false,
+  loading: () => <div className="h-40 animate-pulse bg-slate-100 rounded-xl" />,
+});
+
+const LessonsSidebar = dynamic(() => import('../_components/LessonsSidebar'), {
   ssr: false,
 });
 export default function LessonClientShell({
