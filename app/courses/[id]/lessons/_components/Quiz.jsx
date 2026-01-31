@@ -1,20 +1,36 @@
 'use client';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { CheckCircle2, XCircle, RefreshCcw } from 'lucide-react';
 
-export default function Quiz({ questions = [], onComplete }) {
+export default function Quiz({ questions = [], onComplete, setCertificate }) {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [score, setScore] = useState(0);
   const [showResult, setShowResult] = useState(false);
   const [selectedOption, setSelectedOption] = useState(null);
   const [isCorrect, setIsCorrect] = useState(null);
 
+  useEffect(() => {
+    if (showResult) {
+      const percentage = (score / questions.length) * 100;
+      if (percentage >= 70 && typeof setCertificate === 'function') {
+        setCertificate(true);
+      }
+      if (typeof onComplete === 'function') {
+        onComplete(percentage);
+      }
+    }
+  }, [showResult, score, questions.length, setCertificate, onComplete]);
+
   const handleAnswer = (optionIndex) => {
+    if (selectedOption !== null) return;
+
     setSelectedOption(optionIndex);
     const correct = optionIndex === questions[currentQuestion].correctAnswer;
     setIsCorrect(correct);
 
-    if (correct) setScore((prev) => prev + 1);
+    if (correct) {
+      setScore((prev) => prev + 1);
+    }
 
     setTimeout(() => {
       if (currentQuestion + 1 < questions.length) {
@@ -23,9 +39,6 @@ export default function Quiz({ questions = [], onComplete }) {
         setIsCorrect(null);
       } else {
         setShowResult(true);
-        const finalScore =
-          ((score + (correct ? 1 : 0)) / questions.length) * 100;
-        if (onComplete) onComplete(finalScore);
       }
     }, 1000);
   };
@@ -35,6 +48,7 @@ export default function Quiz({ questions = [], onComplete }) {
     setScore(0);
     setShowResult(false);
     setSelectedOption(null);
+    setIsCorrect(null);
   };
 
   if (!questions || questions.length === 0) return null;
@@ -42,15 +56,10 @@ export default function Quiz({ questions = [], onComplete }) {
   if (showResult) {
     const percentage = (score / questions.length) * 100;
     return (
-      <div
-        className="p-8 mx-auto rounded-2xl bg-white shadow-sm text-center"
-        style={{ marginInline: 'auto' }}
-      >
+      <div className="p-8 mx-auto rounded-2xl bg-white shadow-sm text-center max-w-xl">
         <h2 className="text-2xl font-bold mb-4">Quiz Result</h2>
         <div
-          className={`text-5xl font-bold mb-4 ${
-            percentage >= 70 ? 'text-green-600' : 'text-red-600'
-          }`}
+          className={`text-5xl font-bold mb-4 ${percentage >= 70 ? 'text-green-600' : 'text-red-600'}`}
         >
           {Math.round(percentage)}%
         </div>
@@ -70,7 +79,7 @@ export default function Quiz({ questions = [], onComplete }) {
   }
 
   return (
-    <div className="p-8 border rounded-2xl bg-white shadow-sm w-full max-w-xl">
+    <div className="p-8 border rounded-2xl bg-white shadow-sm w-full max-w-xl mx-auto">
       <div className="flex justify-between items-center mb-6">
         <span className="text-sm font-medium text-slate-500">
           Question {currentQuestion + 1} of {questions.length}
@@ -84,9 +93,11 @@ export default function Quiz({ questions = [], onComplete }) {
           />
         </div>
       </div>
+
       <h3 className="text-xl font-bold mb-6">
         {questions[currentQuestion].question}
       </h3>
+
       <div className="flex flex-col gap-3">
         {questions[currentQuestion].options.map((option, index) => (
           <button
@@ -101,12 +112,7 @@ export default function Quiz({ questions = [], onComplete }) {
                     : 'border-red-500 bg-red-50'
                   : 'border-slate-100 hover:border-indigo-200 hover:bg-slate-50'
               }
-              ${
-                selectedOption !== null &&
-                index === questions[currentQuestion].correctAnswer
-                  ? 'border-green-500 bg-green-50'
-                  : ''
-              }`}
+              ${selectedOption !== null && index === questions[currentQuestion].correctAnswer ? 'border-green-500 bg-green-50' : ''}`}
           >
             <span>{option}</span>
             {selectedOption === index &&

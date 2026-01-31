@@ -1,3 +1,4 @@
+// \app\courses\[id]\page.jsx
 import { fetchCourses } from '../../_utils/axios';
 import { notFound, redirect } from 'next/navigation';
 import { currentUser } from '@clerk/nextjs/server';

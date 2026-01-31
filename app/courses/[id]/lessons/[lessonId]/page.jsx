@@ -1,8 +1,12 @@
+// \app\courses\[id]\lessons\[lessonId]\page.jsx
 import { fetchCourseById } from '@/app/_utils/axios';
 import LessonClientShell from './LessonClientShell';
+import { auth } from '@clerk/nextjs/server';
 
 export default async function LessonPage({ params }) {
   const { id, lessonId } = await params;
+
+  const { userId } = await auth();
 
   const course = await fetchCourseById(id);
   const lessons = course?.lessons || [];
@@ -19,6 +23,7 @@ export default async function LessonPage({ params }) {
   return (
     <div className="flex">
       <LessonClientShell
+        userId={userId}
         courseId={id}
         lessons={sortedLessons}
         lesson={lesson}

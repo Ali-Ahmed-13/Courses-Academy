@@ -22,9 +22,9 @@ export default async function DashboardPage() {
 
       {userProgressList.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {userProgressList.map((item) => (
-            <DashboardProgressCard key={item.id} item={item} />
-          ))}
+          {userProgressList.map((item) => {
+            return <DashboardProgressCard key={item.id} item={item} />;
+          })}
         </div>
       ) : (
         <div className="flex flex-col items-center justify-center py-20 bg-slate-50 rounded-2xl border-2 border-dashed">

@@ -3,26 +3,33 @@
 import { useEffect, useState } from 'react';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
-import {
-  Smile,
-  Menu,
-  X,
-  GraduationCap,
-  ChevronLeft,
-  ChevronRight,
-} from 'lucide-react';
+import { Smile, Menu, X, GraduationCap } from 'lucide-react';
 import { useUser } from '@clerk/nextjs';
 import { getProgress } from '@/app/_utils/progressApis';
-import LessonProgress from '../_components/LessonProgress';
+import LessonHeader from '../_components/LessonHeader';
+import LessonNav from '../_components/LessonNav';
 
-const LessonsSidebar = dynamic(
-  () => import('../_components/LessonsSidebar'),
-  {}
-);
+const LessonVideo = dynamic(() => import('../_components/LessonVideo'), {
+  loading: () => (
+    <div className="w-full aspect-video bg-slate-200 animate-pulse rounded-3xl" />
+  ),
+  ssr: false,
+});
+const LessonProgress = dynamic(() => import('../_components/LessonProgress'), {
+  loading: () => <p>Loading Progress...</p>,
+  ssr: false,
+});
+const LessonsSidebar = dynamic(() => import('../_components/LessonsSidebar'), {
+  loading: () => <p>Loading Sidebar...</p>,
+  ssr: false,
+});
+
 const Quiz = dynamic(() => import('../_components/Quiz'), {
+  loading: () => <p>Loading Quiz...</p>,
   ssr: false,
 });
 export default function LessonClientShell({
+  userId,
   courseId,
   lessons,
   lesson,
@@ -32,7 +39,7 @@ export default function LessonClientShell({
   hasQuiz,
   quiz,
 }) {
-  const { user, isLoaded } = useUser();
+  const { isLoaded } = useUser();
 
   const [completedLessons, setCompletedLessons] = useState([]);
 
@@ -40,15 +47,15 @@ export default function LessonClientShell({
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
+  const [Certificate, setCertificate] = useState(false);
   useEffect(() => {
-    if (!user) return;
+    if (!userId) return;
 
-    getProgress(user.id, courseId).then((data) => {
+    getProgress(userId, courseId).then((data) => {
       setProgressData(data);
-
-      setCompletedLessons(data?.completedLessons || []);
+      setCompletedLessons((data?.completedLessons || []).map(Number));
     });
-  }, [user, courseId]);
+  }, [userId, courseId]);
 
   if (!isLoaded) return <div className="min-h-screen bg-slate-50" />;
 
@@ -60,7 +67,7 @@ export default function LessonClientShell({
     currentIndex > 0 &&
     !completedLessons.includes(Number(lessons[currentIndex - 1].id));
 
-  if (!user) {
+  if (!userId) {
     return (
       <div className="p-10 text-center text-2xl md:text-4xl mt-20 w-full font-bold text-slate-800">
         Please Login First <Smile className="inline ml-2" />
@@ -84,14 +91,9 @@ export default function LessonClientShell({
 
       <aside
         className={`
-
         fixed inset-y-0 left-0 z-50 w-70 bg-white border-r shadow-2xl transform transition-transform duration-300 ease-out
-
         lg:relative lg:translate-x-0 lg:shadow-none lg:z-0
-
-        ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}
-
-      `}
+        ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}
       >
         <LessonsSidebar
           id={courseId}
@@ -127,78 +129,30 @@ export default function LessonClientShell({
           <div className="space-y-8">
             {/* Header Section */}
 
-            <header className="flex flex-col gap-3">
-              <nav className="flex items-center gap-2 text-sm font-medium text-slate-400">
-                <Link href="/courses" className="hover:text-indigo-600">
-                  Courses
-                </Link>
-
-                <span>/</span>
-
-                <span className="text-slate-600 truncate">
-                  Lesson {currentIndex + 1}
-                </span>
-              </nav>
-
-              <h1 className="text-3xl md:text-4xl font-black text-slate-900 leading-tight">
-                {lesson.title}
-              </h1>
-            </header>
+            <LessonHeader currentIndex={currentIndex} lesson={lesson} />
 
             {/* Progress Bar Wrapper */}
 
             <div className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
-              {progressData ? (
-                <LessonProgress
-                  userId={user.id}
-                  courseId={courseId}
-                  lessonId={lesson.id}
-                  totalLessons={lessons.length}
-                />
-              ) : (
-                <div className="h-2 w-full bg-slate-100 rounded-full animate-pulse" />
-              )}
+              <LessonProgress
+                userId={userId}
+                courseId={courseId}
+                lessonId={lesson.id}
+                Certificate={Certificate}
+                totalLessons={lessons.length}
+              />
             </div>
-
             {/* Video Player Section */}
 
-            {lesson.videoUrl && (
-              <div className="w-full aspect-video rounded-3xl overflow-hidden shadow-2xl bg-black border-4 border-white ring-1 ring-slate-200">
-                <iframe
-                  src={`https://www.youtube.com/embed/${lesson.videoUrl}`}
-                  title="Lesson Video"
-                  className="w-full h-full"
-                  loading="lazy"
-                  allowFullScreen
-                />
-              </div>
-            )}
+            <LessonVideo videoUrl={lesson.videoUrl} />
 
             {/* Navigation Buttons */}
 
-            <div className="flex flex-col sm:flex-row gap-4">
-              {prevLesson && (
-                <Link
-                  href={`/courses/${courseId}/lessons/${prevLesson.id}`}
-                  className="flex-1 flex items-center justify-center gap-2 px-6 py-4 rounded-2xl border-2 border-slate-200 bg-white font-bold text-slate-700 hover:bg-slate-50 transition-all"
-                >
-                  <ChevronLeft size={20} /> Previous
-                </Link>
-              )}
-
-              {nextLesson ? (
-                <Link
-                  href={`/courses/${courseId}/lessons/${nextLesson.id}`}
-                  className="flex-1 flex items-center justify-center gap-2 px-6 py-4 rounded-2xl bg-indigo-600 text-white font-bold hover:bg-indigo-700 shadow-lg shadow-indigo-100 transition-all"
-                >
-                  Next Lesson <ChevronRight size={20} />
-                </Link>
-              ) : (
-                <div className="flex-1 p-4 rounded-2xl bg-green-50 border border-green-200 text-green-700 text-center font-bold">
-                  All lessons completed! 🎉
-                </div>
-              )}
-            </div>
+            <LessonNav
+              courseId={courseId}
+              nextLesson={nextLesson}
+              prevLesson={prevLesson}
+            />
 
             {/* Improved Final Exam / Quiz Section */}
 
@@ -219,14 +173,14 @@ export default function LessonClientShell({
                 </div>
 
                 <div className="p-6 md:p-10 text-center">
-                  <Quiz questions={quiz} />
+                  <Quiz questions={quiz} setCertificate={setCertificate} />
                 </div>
               </section>
             )}
 
             {/* Certificate Section */}
 
-            {progressData?.certificateIssued && hasQuiz && (
+            {progressData?.certificateIssued && Certificate && (
               <div className="py-10 flex justify-center">
                 <Link
                   href={`/certificate/${courseId}`}

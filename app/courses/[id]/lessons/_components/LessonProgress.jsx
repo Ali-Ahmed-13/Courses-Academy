@@ -1,80 +1,82 @@
 'use client';
 import { useEffect, useState, useRef } from 'react';
-import { useRouter } from 'next/navigation';
 import {
   getProgress,
-  updateProgress,
   createProgress,
+  updateProgress,
 } from '@/app/_utils/progressApis';
 
 export default function LessonProgress({
   userId,
   courseId,
   lessonId,
+  Certificate,
   totalLessons,
 }) {
   const [progress, setProgress] = useState(0);
-  const router = useRouter();
-
+  const lastProcessedLesson = useRef(null);
   const isSyncing = useRef(false);
 
   useEffect(() => {
-    const syncProgress = async () => {
+    if (!userId || !courseId || !lessonId || !totalLessons) return;
+
+    const updateUserProgress = async () => {
       if (isSyncing.current) return;
+
       isSyncing.current = true;
 
       try {
-        const currentLessonId = Number(lessonId);
-        const record = await getProgress(userId, courseId);
+        const currentLesson = Number(lessonId);
+        const existingData = await getProgress(userId, courseId);
 
-        if (!record) {
-          const percent = (1 / totalLessons) * 100;
+        if (existingData) {
+          const previousLessons = (existingData.completedLessons || []).map(Number);
+          const isLessonAlreadyCompleted = previousLessons.includes(currentLesson);
+
+          // شرط تحديث الشهادة: إذا كانت true في الـ props و false في الداتابيز
+          const needsCertificateUpdate = Certificate && !existingData.certificateIssued;
+
+          if (!isLessonAlreadyCompleted || needsCertificateUpdate) {
+            const updatedLessons = isLessonAlreadyCompleted
+              ? previousLessons
+              : [...previousLessons, currentLesson];
+
+            const newProgress = (updatedLessons.length / totalLessons) * 100;
+
+            await updateProgress(existingData.documentId || existingData.id, {
+              completedLessons: updatedLessons,
+              progress: newProgress,
+              certificateIssued: Certificate ? true : !!existingData.certificateIssued,
+            });
+
+            setProgress(newProgress);
+          } else {
+            // تحديث الـ state فقط إذا كانت القيمة مختلفة فعلياً لتجنب الـ Infinite Loop
+            if (progress !== existingData.progress) {
+              setProgress(existingData.progress);
+            }
+          }
+        } else {
+          const newProgress = (1 / totalLessons) * 100;
           await createProgress({
             userId,
-            course: courseId,
-            completedLessons: [currentLessonId],
-            progress: percent,
+            courseId,
+            completedLessons: [currentLesson],
+            progress: newProgress,
+            certificateIssued: !!Certificate,
           });
-          setProgress(percent);
-          router.refresh();
-        } else {
-          const docId = record.documentId;
-          let completed = record.completedLessons || [];
-          completed = completed.map((id) => Number(id));
-
-          if (!completed.includes(currentLessonId)) {
-            const updatedCompleted = [...completed, currentLessonId];
-            const percent = (updatedCompleted.length / totalLessons) * 100;
-
-            const updateData = {
-              completedLessons: updatedCompleted,
-              progress: percent,
-            };
-
-            if (percent === 100) {
-              updateData.certificateIssued = true;
-            }
-
-            await updateProgress(docId, updateData);
-
-            setProgress(percent);
-            router.refresh();
-          } else {
-            const percent = (completed.length / totalLessons) * 100;
-            setProgress(percent);
-          }
+          setProgress(newProgress);
         }
       } catch (error) {
-        console.error('Sync Error:', error);
+        console.error("Progress Sync Error:", error);
       } finally {
         isSyncing.current = false;
       }
     };
 
-    if (userId && courseId && lessonId) {
-      syncProgress();
-    }
-  }, [lessonId, userId, courseId, router]);
+    updateUserProgress();
+
+  }, [userId, courseId, lessonId, Certificate, totalLessons]);
 
   return (
     <div className="mb-6 w-full mx-auto">

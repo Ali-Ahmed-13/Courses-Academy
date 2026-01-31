@@ -1,27 +1,52 @@
 import { api } from './axios';
 
-const API = 'http://localhost:1337/api';
-
 /* Get Progress */
-export const getProgress = async (userId, courseId) => {
-  const res = await api.get(
-    `/lesson-progresses?filters[userId][$eq]=${userId}&filters[course][id][$eq]=${courseId}`
-  );
-  return res.data.data[0];
-};
 
-/* Update Progress */
-export const updateProgress = async (documentId, data) => {
-  return api.put(`/lesson-progresses/${documentId}`, {
-    data,
-  });
+export const getProgress = async (userId, courseId) => {
+  try {
+    const res = await api.get(
+      `/lesson-progresses?filters[userId][$eq]=${userId}&filters[course][id][$eq]=${courseId}`
+    );
+    return res.data.data[0] || null;
+  } catch (err) {
+    return null;
+  }
 };
 
 /* Create Progress */
-export const createProgress = async (data) => {
-  return api.post(`/lesson-progresses`, {
-    data,
-  });
+
+export const createProgress = async ({
+  userId,
+  courseId,
+  completedLessons,
+  progress,
+}) => {
+  try {
+    const res = await api.post(`/lesson-progresses`, {
+      data: {
+        userId,
+        course: courseId,
+        completedLessons,
+        progress,
+        certificateIssued: false,
+      },
+    });
+    return res.data;
+  } catch (err) {
+    return null;
+  }
+};
+
+/* Update Progress */
+export const updateProgress = async (id, data) => {
+  try {
+    const res = await api.put(`/lesson-progresses/${id}`, {
+      data,
+    });
+    return res.data;
+  } catch (err) {
+    return null;
+  }
 };
 
 export const getUserAllProgress = async (userId) => {
@@ -29,13 +54,4 @@ export const getUserAllProgress = async (userId) => {
     `/lesson-progresses?filters[userId][$eq]=${userId}&populate=course`
   );
   return res.data.data;
-};
-
-export const updateQuizStatus = async (documentId, score) => {
-  return api.put(`/lesson-progresses/${documentId}`, {
-    data: {
-      quizScore: score,
-      isQuizPassed: score >= 70,
-    },
-  });
 };
