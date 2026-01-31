@@ -3,7 +3,10 @@
 import { useEffect, useState } from 'react';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
-import { Smile, Menu, X, GraduationCap } from 'lucide-react';
+import Menu from 'lucide-react/dist/esm/icons/menu';
+import X from 'lucide-react/dist/esm/icons/x';
+import Smile from 'lucide-react/dist/esm/icons/smile';
+import { GraduationCap } from 'lucide-react';
 import { useUser } from '@clerk/nextjs';
 import { getProgress } from '@/app/_utils/progressApis';
 import LessonHeader from '../_components/LessonHeader';
