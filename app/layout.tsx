@@ -17,7 +17,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link rel="dns-prefetch" href="https://img.youtube.com" />
       </head>
       <body
-        className={`${lato.variable} antialiased bg-slate-50 text-slate-500 min-h-screen overflow-x-hidden`}
+        className={`${lato.variable}  antialiased bg-slate-50 text-slate-500 min-h-screen overflow-x-hidden`}
       >
         <ClerkProvider>
           <Header />
