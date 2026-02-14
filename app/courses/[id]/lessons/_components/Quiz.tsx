@@ -1,31 +1,49 @@
 'use client';
-import { useState, useEffect } from 'react';
+
+import { useState, useEffect, ReactElement } from 'react';
 import { CheckCircle2, XCircle, RefreshCcw } from 'lucide-react';
 
-export default function Quiz({ questions = [], onComplete, setCertificate }) {
+export interface QuizQuestion {
+  question: string;
+  options: (string | number)[];
+  correctAnswer: number;
+}
+
+export interface QuizProps {
+  questions: QuizQuestion[];
+  onComplete?: (percentage: number) => void;
+  setCertificate: (val: boolean) => void;
+}
+
+export default function Quiz({
+  questions,
+  onComplete,
+  setCertificate,
+}: QuizProps) {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [score, setScore] = useState(0);
   const [showResult, setShowResult] = useState(false);
-  const [selectedOption, setSelectedOption] = useState(null);
-  const [isCorrect, setIsCorrect] = useState(null);
+  const [selectedOption, setSelectedOption] = useState<null | number>(null);
+  const [isCorrect, setIsCorrect] = useState<null | boolean>(null);
 
   useEffect(() => {
     if (showResult) {
       const percentage = (score / questions.length) * 100;
-      if (percentage >= 70 && typeof setCertificate === 'function') {
+      if (percentage >= 70) {
         setCertificate(true);
       }
-      if (typeof onComplete === 'function') {
+      if (onComplete) {
         onComplete(percentage);
       }
     }
   }, [showResult, score, questions.length, setCertificate, onComplete]);
 
-  const handleAnswer = (optionIndex) => {
+  const handleAnswer = (optionIndex: number) => {
     if (selectedOption !== null) return;
 
     setSelectedOption(optionIndex);
-    const correct = optionIndex === questions[currentQuestion].correctAnswer;
+    const correct =
+      optionIndex === Number(questions[currentQuestion].correctAnswer);
     setIsCorrect(correct);
 
     if (correct) {
@@ -49,6 +67,7 @@ export default function Quiz({ questions = [], onComplete, setCertificate }) {
     setShowResult(false);
     setSelectedOption(null);
     setIsCorrect(null);
+    setCertificate(false);
   };
 
   if (!questions || questions.length === 0) return null;
@@ -94,7 +113,7 @@ export default function Quiz({ questions = [], onComplete, setCertificate }) {
         </div>
       </div>
 
-      <h3 className="text-xl font-bold mb-6">
+      <h3 className="text-xl font-bold mb-6 text-left">
         {questions[currentQuestion].question}
       </h3>
 
@@ -112,7 +131,8 @@ export default function Quiz({ questions = [], onComplete, setCertificate }) {
                     : 'border-red-500 bg-red-50'
                   : 'border-slate-100 hover:border-indigo-200 hover:bg-slate-50'
               }
-              ${selectedOption !== null && index === questions[currentQuestion].correctAnswer ? 'border-green-500 bg-green-50' : ''}`}
+              ${selectedOption !== null && index === Number(questions[currentQuestion].correctAnswer) ? 'border-green-500 bg-green-50' : ''}
+            `}
           >
             <span>{option}</span>
             {selectedOption === index &&
@@ -121,6 +141,11 @@ export default function Quiz({ questions = [], onComplete, setCertificate }) {
               ) : (
                 <XCircle className="text-red-600" />
               ))}
+            {selectedOption !== null &&
+              index === Number(questions[currentQuestion].correctAnswer) &&
+              selectedOption !== index && (
+                <CheckCircle2 className="text-green-600" />
+              )}
           </button>
         ))}
       </div>

@@ -1,10 +1,27 @@
 'use client';
+
 import { useEffect, useState, useRef } from 'react';
 import {
   getProgress,
   createProgress,
   updateProgress,
-} from '@/app/_utils/progressApis';
+} from '../../../../_utils/progressApis';
+
+interface LessonProgressProps {
+  userId: string;
+  courseId: string;
+  lessonId: string;
+  Certificate: boolean;
+  totalLessons: number;
+}
+
+interface ProgressData {
+  id?: string;
+  documentId?: string;
+  completedLessons: (string | number)[];
+  progress: number;
+  certificateIssued: boolean;
+}
 
 export default function LessonProgress({
   userId,
@@ -12,10 +29,9 @@ export default function LessonProgress({
   lessonId,
   Certificate,
   totalLessons,
-}) {
-  const [progress, setProgress] = useState(0);
-  const lastProcessedLesson = useRef(null);
-  const isSyncing = useRef(false);
+}: LessonProgressProps) {
+  const [progress, setProgress] = useState<number>(0);
+  const isSyncing = useRef<boolean>(false);
 
   useEffect(() => {
     if (!userId || !courseId || !lessonId || !totalLessons) return;
@@ -27,14 +43,19 @@ export default function LessonProgress({
 
       try {
         const currentLesson = Number(lessonId);
-        const existingData = await getProgress(userId, courseId);
+        const existingData: ProgressData | null = await getProgress(
+          userId,
+          courseId
+        );
 
         if (existingData) {
-          const previousLessons = (existingData.completedLessons || []).map(Number);
-          const isLessonAlreadyCompleted = previousLessons.includes(currentLesson);
-
-          // شرط تحديث الشهادة: إذا كانت true في الـ props و false في الداتابيز
-          const needsCertificateUpdate = Certificate && !existingData.certificateIssued;
+          const previousLessons = (existingData.completedLessons || []).map(
+            Number
+          );
+          const isLessonAlreadyCompleted =
+            previousLessons.includes(currentLesson);
+          const needsCertificateUpdate =
+            Certificate && !existingData.certificateIssued;
 
           if (!isLessonAlreadyCompleted || needsCertificateUpdate) {
             const updatedLessons = isLessonAlreadyCompleted
@@ -43,15 +64,19 @@ export default function LessonProgress({
 
             const newProgress = (updatedLessons.length / totalLessons) * 100;
 
-            await updateProgress(existingData.documentId || existingData.id, {
-              completedLessons: updatedLessons,
-              progress: newProgress,
-              certificateIssued: Certificate ? true : !!existingData.certificateIssued,
-            });
+            await updateProgress(
+              existingData.documentId || existingData.id || '',
+              {
+                completedLessons: updatedLessons,
+                progress: newProgress,
+                certificateIssued: Certificate
+                  ? true
+                  : !!existingData.certificateIssued,
+              }
+            );
 
             setProgress(newProgress);
           } else {
-            // تحديث الـ state فقط إذا كانت القيمة مختلفة فعلياً لتجنب الـ Infinite Loop
             if (progress !== existingData.progress) {
               setProgress(existingData.progress);
             }
@@ -68,15 +93,14 @@ export default function LessonProgress({
           setProgress(newProgress);
         }
       } catch (error) {
-        console.error("Progress Sync Error:", error);
+        console.error('Progress Sync Error:', error);
       } finally {
         isSyncing.current = false;
       }
     };
 
     updateUserProgress();
-
-  }, [userId, courseId, lessonId, Certificate, totalLessons]);
+  }, [userId, courseId, lessonId, Certificate, totalLessons, progress]);
 
   return (
     <div className="mb-6 w-full mx-auto">

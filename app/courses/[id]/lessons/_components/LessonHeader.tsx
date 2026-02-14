@@ -1,6 +1,12 @@
 import Link from 'next/link';
 
-export default function LessonHeader({ lesson, currentIndex }) {
+export default function LessonHeader({
+  lesson,
+  currentIndex,
+}: {
+  lesson: any;
+  currentIndex: number;
+}) {
   return (
     <header className="flex flex-col gap-3">
       <nav className="flex items-center gap-2 text-sm font-medium text-slate-400">

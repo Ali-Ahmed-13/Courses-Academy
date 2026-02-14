@@ -17,6 +17,10 @@ const nextConfig = {
       },
     ],
   },
+  webpack: (config, options) => {
+    config.resolve.modules.push(path.join(__dirname, 'app'));
+    return config;
+  },
 };
 
 export default nextConfig;

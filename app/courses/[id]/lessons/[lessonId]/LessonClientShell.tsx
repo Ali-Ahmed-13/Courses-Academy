@@ -5,20 +5,68 @@ import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import { Smile, Menu, X, GraduationCap } from 'lucide-react';
 import { useUser } from '@clerk/nextjs';
-import { getProgress } from '@/app/_utils/progressApis';
+import { getProgress } from '../../../../_utils/progressApis';
 import LessonHeader from '../_components/LessonHeader';
 import LessonNav from '../_components/LessonNav';
-import LessonVideo from './../_components/LessonVideo';
-import LessonProgress from './../_components/LessonProgress';
+import LessonVideo from '../_components/LessonVideo';
+import LessonProgress from '../_components/LessonProgress';
 
-const Quiz = dynamic(() => import('../_components/Quiz'), {
-  ssr: false,
-  loading: () => <div className="h-40 animate-pulse bg-slate-100 rounded-xl" />,
-});
+export interface LessonProps {
+  id: any;
+  order: number;
+  title: string;
+  videoUrl: string;
+}
 
-const LessonsSidebar = dynamic(() => import('../_components/LessonsSidebar'), {
-  ssr: false,
-});
+interface QuizProps {
+  id: string;
+  question: string;
+  options: string[];
+  answer: string;
+}
+
+interface LessonClientShellProps {
+  userId: string;
+  courseId: string;
+  lessons: LessonProps[];
+  lesson: LessonProps;
+  lessonId: string;
+  prevLesson: LessonProps | null;
+  nextLesson: LessonProps | null;
+  hasQuiz: boolean;
+  quiz: QuizProps[];
+}
+
+interface DynamicQuizProps {
+  questions: QuizProps[];
+  setCertificate: (val: boolean) => void;
+  onComplete?: any;
+}
+
+interface DynamicSidebarProps {
+  id: string;
+  lessons: LessonProps[];
+  activeLessonId: string;
+  completedLessons: string[];
+}
+
+const Quiz = dynamic<DynamicQuizProps>(
+  () => import('../_components/Quiz') as any,
+  {
+    ssr: false,
+    loading: () => (
+      <div className="h-40 animate-pulse bg-slate-100 rounded-xl" />
+    ),
+  }
+);
+
+const LessonsSidebar = dynamic<DynamicSidebarProps>(
+  () => import('../_components/LessonsSidebar') as any,
+  {
+    ssr: false,
+  }
+);
+
 export default function LessonClientShell({
   userId,
   courseId,
@@ -29,20 +77,17 @@ export default function LessonClientShell({
   nextLesson,
   hasQuiz,
   quiz,
-}) {
+}: LessonClientShellProps) {
   const { isLoaded } = useUser();
-
-  const [completedLessons, setCompletedLessons] = useState([]);
-
-  const [progressData, setProgressData] = useState(null);
-
+  const [completedLessons, setCompletedLessons] = useState<number[]>([]);
+  const [progressData, setProgressData] = useState<any>(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-
   const [Certificate, setCertificate] = useState(false);
-  useEffect(() => {
-    if (!userId) return;
 
-    getProgress(userId, courseId).then((data) => {
+  useEffect(() => {
+    if (!userId || !courseId) return;
+
+    getProgress(userId, courseId).then((data: any) => {
       setProgressData(data);
       setCompletedLessons((data?.completedLessons || []).map(Number));
     });
@@ -51,7 +96,7 @@ export default function LessonClientShell({
   if (!isLoaded) return <div className="min-h-screen bg-slate-50" />;
 
   const currentIndex = lessons.findIndex(
-    (l) => Number(l.id) === Number(lesson.id)
+    (l) => Number(l.id) === Number(lessonId)
   );
 
   const isLocked =
@@ -68,8 +113,6 @@ export default function LessonClientShell({
 
   return (
     <div className="flex w-full min-h-screen bg-slate-50 relative overflow-x-hidden">
-      {/* Mobile/Tablet Fixed Toggle Button */}
-
       <button
         onClick={() => setIsSidebarOpen(!isSidebarOpen)}
         className="lg:hidden fixed bottom-6 right-6 z-60 flex items-center justify-center w-14 h-14 bg-indigo-600 text-white rounded-full shadow-2xl hover:bg-indigo-700 transition-all active:scale-90 border-4 border-white"
@@ -78,23 +121,18 @@ export default function LessonClientShell({
         {isSidebarOpen ? <X size={28} /> : <Menu size={28} />}
       </button>
 
-      {/* Sidebar Drawer */}
-
       <aside
-        className={`
-        fixed inset-y-0 left-0 z-50 w-70 bg-white border-r shadow-2xl transform transition-transform duration-300 ease-out
-        lg:relative lg:translate-x-0 lg:shadow-none lg:z-0
-        ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}
+        className={`fixed inset-y-0 left-0 z-50 w-72 bg-white border-r shadow-2xl transform transition-transform duration-300 ease-out lg:relative lg:translate-x-0 lg:shadow-none lg:z-0 ${
+          isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
+        }`}
       >
         <LessonsSidebar
           id={courseId}
           lessons={lessons}
           activeLessonId={lessonId}
-          completedLessons={completedLessons}
+          completedLessons={completedLessons.map(String)}
         />
       </aside>
-
-      {/* Background Overlay */}
 
       {isSidebarOpen && (
         <div
@@ -103,26 +141,19 @@ export default function LessonClientShell({
         />
       )}
 
-      {/* Main Content Area */}
-
       <main className="flex-1 w-full max-w-5xl mx-auto px-4 py-8 md:px-10">
         {isLocked ? (
           <div className="flex flex-col items-center justify-center min-h-[50vh] text-center bg-white rounded-3xl border p-8 shadow-sm">
             <h2 className="text-2xl font-bold text-slate-800 mb-2">
               Lesson Locked 🔒
             </h2>
-
             <p className="text-slate-500">
               Please complete the previous lessons to unlock this content.
             </p>
           </div>
         ) : (
           <div className="space-y-8">
-            {/* Header Section */}
-
             <LessonHeader currentIndex={currentIndex} lesson={lesson} />
-
-            {/* Progress Bar Wrapper */}
 
             <div className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
               <LessonProgress
@@ -133,11 +164,8 @@ export default function LessonClientShell({
                 totalLessons={lessons.length}
               />
             </div>
-            {/* Video Player Section */}
 
             <LessonVideo videoUrl={lesson.videoUrl} />
-
-            {/* Navigation Buttons */}
 
             <LessonNav
               courseId={courseId}
@@ -145,31 +173,24 @@ export default function LessonClientShell({
               prevLesson={prevLesson}
             />
 
-            {/* Improved Final Exam / Quiz Section */}
-
             {hasQuiz && (
               <section className="mt-16 bg-white rounded-4xl border border-slate-200 shadow-sm overflow-hidden w-auto">
                 <div className="bg-slate-900 p-8 text-white flex flex-col items-center sm:items-start sm:flex-row sm:justify-between gap-4">
                   <div>
                     <h2 className="text-2xl font-bold">Final Quiz 📝</h2>
-
                     <p className="text-slate-400 text-sm mt-1">
                       Test your knowledge to earn your certificate.
                     </p>
                   </div>
-
                   <div className="px-4 py-2 bg-white/10 rounded-full text-xs font-mono uppercase tracking-widest">
                     Assessment
                   </div>
                 </div>
-
                 <div className="p-6 md:p-10 text-center">
                   <Quiz questions={quiz} setCertificate={setCertificate} />
                 </div>
               </section>
             )}
-
-            {/* Certificate Section */}
 
             {progressData?.certificateIssued && Certificate && (
               <div className="py-10 flex justify-center">

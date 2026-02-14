@@ -1,9 +1,8 @@
-// \app\courses\[id]\lessons\[lessonId]\page.jsx
-import { fetchCourseById } from '@/app/_utils/axios';
+import { fetchCourseById } from '../../../../_utils/axios';
 import LessonClientShell from './LessonClientShell';
 import { auth } from '@clerk/nextjs/server';
 
-export default async function LessonPage({ params }) {
+export default async function LessonPage({ params }: { params: any }) {
   const { id, lessonId } = await params;
 
   const { userId } = await auth();

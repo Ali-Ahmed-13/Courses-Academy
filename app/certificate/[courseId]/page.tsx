@@ -1,23 +1,23 @@
-import React from 'react';
 import { currentUser } from '@clerk/nextjs/server';
-import { fetchCourses } from '@/app/_utils/axios';
+import { fetchCourses } from '../../_utils/axios';
 import { notFound } from 'next/navigation';
-import PrintButton from '../_components/PrintButton'; 
+import PrintButton from '../_components/PrintButton';
 
-export default async function Certificate({ params }) {
+export default async function Certificate({ params }: { params: any }) {
   const { courseId } = await params;
   const user = await currentUser();
   const courses = await fetchCourses();
-  const course = courses.find((c) => c.id === parseInt(courseId));
+  const course = courses.find(
+    (c: { id: number }) => c.id === parseInt(courseId)
+  );
 
   if (!course) notFound();
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 p-5">
-      {/* منطقة الشهادة */}
       <div
         id="certificate-area"
-        className="bg-white p-16 rounded-none shadow-2xl text-center border-[15px] border-double border-indigo-600 max-w-4xl w-full relative"
+        className="bg-white p-16 rounded-none shadow-2xl text-center border-15 border-double border-indigo-600 max-w-4xl w-full relative"
       >
         <div className="absolute top-5 right-5 opacity-10 text-indigo-600 text-6xl font-bold">
           OFFICIAL

@@ -1,6 +1,18 @@
 import Link from 'next/link';
 
-export default function DashboardProgressCard({ item }) {
+interface DashboardProgressCardProps {
+  item: {
+    course: {
+      id: number;
+      title: string;
+    };
+    progress: number;
+  };
+}
+
+export default function DashboardProgressCard({
+  item,
+}: DashboardProgressCardProps) {
   const course = item.course;
   const progress = Math.round(item.progress || 0);
 

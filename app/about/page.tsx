@@ -1,7 +1,6 @@
 'use client';
-import React from 'react';
 import { motion } from 'framer-motion';
-import { BookOpen, Award, ShieldCheck, Zap, Users, Code } from 'lucide-react';
+import {  ShieldCheck, Zap, Code } from 'lucide-react';
 import Link from 'next/link';
 
 const features = [

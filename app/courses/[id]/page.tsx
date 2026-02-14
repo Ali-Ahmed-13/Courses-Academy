@@ -1,21 +1,22 @@
-// \app\courses\[id]\page.jsx
 import { fetchCourses } from '../../_utils/axios';
 import { notFound, redirect } from 'next/navigation';
 import { currentUser } from '@clerk/nextjs/server';
-import { getProgress } from '@/app/_utils/progressApis';
+import { getProgress } from '../../_utils/progressApis';
 
-export default async function CoursePage({ params }) {
+export default async function CoursePage({ params }: { params: any }) {
   const { id } = await params;
-
   const [user, courses] = await Promise.all([currentUser(), fetchCourses()]);
 
-  const course = courses.find((c) => c.id === parseInt(id));
+  const course = courses.find((c: { id: number }) => c.id === parseInt(id));
 
   if (!course) {
     notFound();
   }
 
-  const lessons = course?.lessons?.sort((a, b) => a.order - b.order) || [];
+  const lessons =
+    course?.lessons?.sort(
+      (a: { order: number }, b: { order: number }) => a.order - b.order
+    ) || [];
 
   if (lessons.length === 0) return <p>No lessons available</p>;
 
@@ -28,7 +29,7 @@ export default async function CoursePage({ params }) {
     if (completed.length > 0) {
       const lastCompletedId = completed[completed.length - 1];
       const currentIndex = lessons.findIndex(
-        (l) => l.id === Number(lastCompletedId)
+        (l: { id: number }) => l.id === Number(lastCompletedId)
       );
 
       if (currentIndex !== -1 && currentIndex < lessons.length - 1) {

@@ -1,6 +1,6 @@
 import Image from 'next/image';
 
-const VideoImage = ({ videoId }) => {
+const VideoImage = ({ videoId }: { videoId: string | undefined }) => {
   const thumbnailUrl = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
 
   return (

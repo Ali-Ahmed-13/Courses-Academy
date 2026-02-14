@@ -1,15 +1,19 @@
-// LessonsSidebar.jsx
-'use client';
 import Link from 'next/link';
 import { CheckCircle, PlayCircle } from 'lucide-react';
-import { memo } from 'react';
+import { LessonProps } from '../[lessonId]/LessonClientShell';
 
+interface LessonsSidebarProps {
+  id: string;
+  lessons: LessonProps[];
+  activeLessonId: string;
+  completedLessons?: (string | number)[];
+}
 const LessonsSidebar = ({
   id,
   lessons,
   activeLessonId,
   completedLessons = [],
-}) => {
+}: LessonsSidebarProps) => {
   return (
     <div className="w-full bg-white h-full p-5 overflow-y-auto">
       <h2 className="font-bold text-xl mb-5">Course Content</h2>
@@ -48,4 +52,4 @@ const LessonsSidebar = ({
     </div>
   );
 };
-export default memo(LessonsSidebar);
+export default LessonsSidebar;

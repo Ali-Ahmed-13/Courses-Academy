@@ -4,7 +4,30 @@ import { motion } from 'framer-motion';
 import CourseCard from './CourseCard';
 import CourseSkeleton from './CourseSkeleton';
 
-export default function FeaturedCourses({ courses, loading }) {
+export interface Course {
+  id: number | string;
+  title: string;
+  price: number;
+  level?: string;
+  thumbnail?: {
+    url: string;
+    formats?: {
+      medium?: {
+        url: string;
+      };
+    };
+  };
+}
+
+interface FeaturedCoursesProps {
+  courses: Course[];
+  loading: boolean;
+}
+
+export default function FeaturedCourses({
+  courses = [],
+  loading = false,
+}: FeaturedCoursesProps) {
   return (
     <section className="py-20 bg-white">
       <div className="max-w-7xl mx-auto px-6">
@@ -28,9 +51,12 @@ export default function FeaturedCourses({ courses, loading }) {
             ? Array.from({ length: 4 }).map((_, i) => (
                 <CourseSkeleton key={i} />
               ))
-            : courses.map((course) => (
-                <CourseCard key={course.id} course={course} />
-              ))}
+            : Array.isArray(courses)
+              ? courses.map((course) => (
+                  <CourseCard key={course.id} course={course} />
+                ))
+              : []}
+
         </div>
       </div>
     </section>

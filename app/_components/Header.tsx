@@ -1,7 +1,7 @@
 'use client';
 import Image from 'next/image';
 import Link from 'next/link';
-import React, { useState } from 'react'; // أضفنا useState
+import React, { useState } from 'react';
 import {
   SignInButton,
   SignUpButton,
@@ -9,18 +9,20 @@ import {
   SignedOut,
   UserButton,
 } from '@clerk/nextjs';
-import { Menu, X } from 'lucide-react'; // أضفنا أيقونة X للغلق
+import { Menu, X } from 'lucide-react';
 
-const Header = () => {
+type NavLink = {
+  name: string;
+  href: string;
+};
+const Header: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
-
-  const navLinks = [
+  const navLinks: NavLink[] = [
     { name: 'Home', href: '/' },
     { name: 'Courses', href: '/courses' },
     { name: 'About', href: '/about' },
-    { name: 'Contact', href: 'contact' },
+    { name: 'Contact', href: '/contact' },
   ];
-
   return (
     <header className="sticky bg-Dark shadow-2xl ">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -31,7 +33,6 @@ const Header = () => {
               <Image src={'/logosvg.svg'} width={100} height={100} alt="Logo" />
             </Link>
           </div>
-
           <div className="md:flex md:items-center md:gap-12">
             <nav className="hidden md:block" aria-label="Main Navigation">
               <ul className="flex items-center gap-6 text-sm">
@@ -67,7 +68,7 @@ const Header = () => {
               </SignedIn>
               <Link
                 href={'/dashboard'}
-                className="border border-slate-300 text-Text hover:border-indigo-600 hover:text-gray-300 text-sm  px-2 py-1 md:text-md  md:px-6 md:py-3 rounded-lg font-medium transition"
+                className="border border-slate-300 text-Text hover:border-indigo-600 hover:text-gray-300 text-sm px-2 py-1 md:text-md md:px-6 md:py-3 rounded-lg font-medium transition"
               >
                 Go To Dashboard
               </Link>

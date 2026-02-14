@@ -1,14 +1,26 @@
 import { currentUser } from '@clerk/nextjs/server';
-import { getUserAllProgress } from '@/app/_utils/progressApis';
+import { getUserAllProgress } from '../_utils/progressApis';
 import DashboardProgressCard from './_components/DashboardProgressCard';
 import { LayoutDashboard, BookOpen } from 'lucide-react';
 import Link from 'next/link';
 
-export default async function DashboardPage() {
+interface Item {
+  course: {
+    id: number;
+    title: string;
+  };
+  progress: number;
+}
+
+const DashboardPage = async () => {
   const user = await currentUser();
 
   if (!user) {
-    return <div className="p-10 text-center text-2xl">Please log in first</div>;
+    return (
+      <div className="p-10 text-center text-2xl">
+        Please log in first
+      </div>
+    );
   }
 
   const userProgressList = await getUserAllProgress(user.id);
@@ -22,9 +34,9 @@ export default async function DashboardPage() {
 
       {userProgressList.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {userProgressList.map((item) => {
-            return <DashboardProgressCard key={item.id} item={item} />;
-          })}
+          {userProgressList.map((item: Item) => (
+            <DashboardProgressCard key={item.course.id} item={item} />
+          ))}
         </div>
       ) : (
         <div className="flex flex-col items-center justify-center py-20 bg-slate-50 rounded-2xl border-2 border-dashed">
@@ -42,4 +54,6 @@ export default async function DashboardPage() {
       )}
     </div>
   );
-}
+};
+
+export default DashboardPage;

@@ -1,13 +1,13 @@
 'use client';
 import { useState } from 'react';
 import { Play } from 'lucide-react';
-import VideoImage from './Image/VideoImage.jsx';
+import VideoImage from './Image/VideoImage';
 
-export default function LessonVideo({ videoUrl }) {
+export default function LessonVideo({ videoUrl }: { videoUrl: string }) {
   const [isPlaying, setIsPlaying] = useState(false);
 
   if (!videoUrl) return null;
-  const videoId = videoUrl.split('?')[0].split('/').pop();
+  const videoId: string | undefined = videoUrl.split('?')[0].split('/').pop();
 
   return (
     <div className="w-full aspect-video rounded-3xl overflow-hidden shadow-2xl bg-black border-4 border-white ring-1 ring-slate-200 relative group">

@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = process.env.NEXT_PUBLIC_API_KEY;
+export const API_URL = process.env.NEXT_PUBLIC_API_KEY;
 
 export let api = axios.create({
   baseURL: API_URL,
@@ -17,11 +17,13 @@ export const fetchCourses = async () => {
   }
 };
 
-export const fetchCourseById = async (id) => {
+export const fetchCourseById = async (id: any) => {
   try {
     const res = await api.get('/courses?populate=*');
 
-    let filtered = res.data.data.filter((course) => course.id == id);
+    let filtered = res.data.data.filter(
+      (course: { id: any }) => course.id == id
+    );
 
     return filtered.length > 0 ? filtered[0] : null;
   } catch (err) {

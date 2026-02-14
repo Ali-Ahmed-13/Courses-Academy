@@ -2,7 +2,7 @@ import { api } from './axios';
 
 /* Get Progress */
 
-export const getProgress = async (userId, courseId) => {
+export const getProgress = async (userId: string, courseId: string) => {
   try {
     const res = await api.get(
       `/lesson-progresses?filters[userId][$eq]=${userId}&filters[course][id][$eq]=${courseId}`
@@ -20,7 +20,14 @@ export const createProgress = async ({
   courseId,
   completedLessons,
   progress,
-}) => {
+  certificateIssued,
+}: {
+  userId: string;
+  courseId: string;
+  completedLessons: number[];
+  progress: number;
+  certificateIssued: boolean;
+}): Promise<any> => {
   try {
     const res = await api.post(`/lesson-progresses`, {
       data: {
@@ -28,17 +35,25 @@ export const createProgress = async ({
         course: courseId,
         completedLessons,
         progress,
-        certificateIssued: false,
+        certificateIssued: certificateIssued,
       },
     });
     return res.data;
   } catch (err) {
+    console.error('Create Progress API Error:', err);
     return null;
   }
 };
 
 /* Update Progress */
-export const updateProgress = async (id, data) => {
+export const updateProgress = async (
+  id: string,
+  data: {
+    completedLessons: number[];
+    progress: number;
+    certificateIssued: boolean;
+  }
+) => {
   try {
     const res = await api.put(`/lesson-progresses/${id}`, {
       data,
@@ -49,7 +64,7 @@ export const updateProgress = async (id, data) => {
   }
 };
 
-export const getUserAllProgress = async (userId) => {
+export const getUserAllProgress = async (userId: any) => {
   const res = await api.get(
     `/lesson-progresses?filters[userId][$eq]=${userId}&populate=course`
   );

@@ -1,7 +1,15 @@
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import Link from 'next/link';
 
-export default function LessonNav({ prevLesson, nextLesson, courseId }) {
+export default function LessonNav({
+  prevLesson,
+  nextLesson,
+  courseId,
+}: {
+  prevLesson: any;
+  nextLesson: any;
+  courseId: string;
+}) {
   return (
     <div className="flex flex-col sm:flex-row gap-4">
       {prevLesson && (

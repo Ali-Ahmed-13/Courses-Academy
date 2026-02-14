@@ -6,7 +6,7 @@ import { Mail, Phone, MapPin, Send, MessageSquare } from 'lucide-react';
 export default function ContactPage() {
   const [status, setStatus] = useState('');
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: { preventDefault: () => void }) => {
     e.preventDefault();
     setStatus('sending');
     setTimeout(() => setStatus('success'), 1500);
@@ -153,7 +153,7 @@ export default function ContactPage() {
                     </label>
                     <textarea
                       required
-                      rows="5"
+                      rows={5}
                       placeholder="Your message here..."
                       className="w-full px-6 py-4 rounded-2xl bg-slate-50 border-none focus:ring-2 focus:ring-indigo-500 transition"
                     ></textarea>
