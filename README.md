@@ -1,36 +1,48 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Courses NextJS App
+
+A NextJS app for managing courses and lessons.
+
+## Features
+
+* User authentication and authorization using Clerk
+* Course and lesson management
+* User progress tracking
+* Course completion certificates
+* Responsive design using Tailwind CSS
 
 ## Getting Started
 
-First, run the development server:
+### Installation
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+* Clone the repository
+* install dependencies with `npm install`
+* start the development server with `npm run dev`
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Environment Variables
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+* `NEXT_PUBLIC_API_KEY` - the API key for the Clerk instance
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Running Tests
 
-## Learn More
+* run unit tests with `npm run test:unit`
+* run integration tests with `npm run test:integration`
 
-To learn more about Next.js, take a look at the following resources:
+### Building and Deploying
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+* build the app with `npm run build`
+* deploy the app with `npm run deploy`
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Contributing
 
-## Deploy on Vercel
+Contributions are welcome! Please open an issue or pull request to discuss any changes you'd like to make.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## License
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+
+## Acknowledgments
+
+* Clerk for user authentication and authorization
+* Tailwind CSS for responsive design
+* Lucide Icons for icons and graphics
+* NextJS for server-side rendering and static site generation
