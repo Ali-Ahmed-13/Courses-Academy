@@ -192,7 +192,7 @@ export default function LessonClientShell({
               </section>
             )}
 
-            {progressData?.certificateIssued && Certificate && (
+            {(progressData?.certificateIssued || Certificate) && (
               <div className="py-10 flex justify-center">
                 <Link
                   href={`/certificate/${courseId}`}
