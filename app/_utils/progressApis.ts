@@ -65,8 +65,13 @@ export const updateProgress = async (
 };
 
 export const getUserAllProgress = async (userId: any) => {
-  const res = await api.get(
-    `/lesson-progresses?filters[userId][$eq]=${userId}&populate=course`
-  );
-  return res.data.data;
+  try {
+    const res = await api.get(
+      `/lesson-progresses?filters[userId][$eq]=${userId}&populate=course`
+    );
+    return res.data.data;
+  } catch (err) {
+    console.error('Get User All Progress API Error:', err);
+    return [];
+  }
 };

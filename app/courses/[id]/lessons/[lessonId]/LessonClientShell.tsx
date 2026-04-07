@@ -41,6 +41,7 @@ interface DynamicQuizProps {
   questions: QuizProps[];
   setCertificate: (val: boolean) => void;
   onComplete?: any;
+  courseId: string;
 }
 
 interface DynamicSidebarProps {
@@ -187,7 +188,7 @@ export default function LessonClientShell({
                   </div>
                 </div>
                 <div className="p-6 md:p-10 text-center">
-                  <Quiz questions={quiz} setCertificate={setCertificate} />
+                  <Quiz questions={quiz} setCertificate={setCertificate} courseId={courseId} />
                 </div>
               </section>
             )}

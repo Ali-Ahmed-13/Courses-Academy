@@ -1,7 +1,8 @@
 'use client';
 
 import { useState, useEffect, ReactElement } from 'react';
-import { CheckCircle2, XCircle, RefreshCcw } from 'lucide-react';
+import { CheckCircle2, XCircle, RefreshCcw, GraduationCap } from 'lucide-react';
+import Link from 'next/link';
 
 export interface QuizQuestion {
   question: string;
@@ -13,12 +14,14 @@ export interface QuizProps {
   questions: QuizQuestion[];
   onComplete?: (percentage: number) => void;
   setCertificate: (val: boolean) => void;
+  courseId?: string;
 }
 
 export default function Quiz({
   questions,
   onComplete,
   setCertificate,
+  courseId,
 }: QuizProps) {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [score, setScore] = useState(0);
@@ -74,25 +77,46 @@ export default function Quiz({
 
   if (showResult) {
     const percentage = (score / questions.length) * 100;
+    const passed = percentage >= 70;
+    
     return (
-      <div className="p-8 mx-auto rounded-2xl bg-white shadow-sm text-center max-w-xl">
+      <div className="p-8 mx-auto rounded-2xl bg-white shadow-sm text-center max-w-xl border border-slate-100">
         <h2 className="text-2xl font-bold mb-4">Quiz Result</h2>
         <div
-          className={`text-5xl font-bold mb-4 ${percentage >= 70 ? 'text-green-600' : 'text-red-600'}`}
+          className={`text-5xl font-bold mb-4 ${passed ? 'text-green-600' : 'text-red-600'}`}
         >
           {Math.round(percentage)}%
         </div>
         <p className="text-slate-600 mb-6">
-          {percentage >= 70
+          {passed
             ? 'Congratulations! You passed.'
             : 'You did not pass. Try again!'}
         </p>
-        <button
-          onClick={resetQuiz}
-          className="flex items-center gap-2 mx-auto px-6 py-3 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition"
-        >
-          <RefreshCcw className="w-5 h-5" /> Retake Quiz
-        </button>
+
+        {passed && courseId ? (
+          <div className="flex flex-col gap-4 items-center">
+            <Link
+              href={`/certificate/${courseId}`}
+              className="flex items-center justify-center gap-3 px-8 py-4 w-full rounded-2xl bg-linear-to-r from-indigo-600 to-violet-700 text-white font-bold shadow-lg hover:shadow-indigo-200 transition-all hover:-translate-y-1"
+            >
+              <GraduationCap size={24} />
+              Claim Certificate 🎓
+            </Link>
+            <button
+              onClick={resetQuiz}
+              className="mt-2 text-sm text-slate-500 hover:text-slate-800 transition"
+            >
+              Retake Quiz
+            </button>
+          </div>
+        ) : (
+          <button
+            onClick={resetQuiz}
+            className="flex items-center justify-center gap-2 mx-auto px-8 py-4 bg-indigo-600 text-white rounded-xl font-bold hover:bg-indigo-700 transition"
+          >
+            <RefreshCcw className="w-5 h-5" /> Retake Quiz
+          </button>
+        )}
       </div>
     );
   }
