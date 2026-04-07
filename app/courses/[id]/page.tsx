@@ -8,12 +8,14 @@ import { getProgress } from '../../_utils/progressApis';
 export default async function CoursePage({ params }: { params: any }) {
   const { id } = await params;
 
+  // 1. تعريف متغيرات الداتا بره عشان نستخدمها بعد الـ try/catch
+  let targetLessonId: string | number | null = null;
+
   try {
-    // حاول تجيب البيانات
     const [user, courses] = await Promise.all([currentUser(), fetchCourses()]);
 
-    if (!courses) {
-      return <div>لا توجد بيانات حالياً.</div>;
+    if (!courses || !Array.isArray(courses)) {
+      return <div>عذراً، لا يمكن تحميل الكورسات حالياً.</div>;
     }
 
     const course = courses.find((c: { id: number }) => c.id === parseInt(id));
@@ -23,34 +25,38 @@ export default async function CoursePage({ params }: { params: any }) {
       course?.lessons?.sort((a: any, b: any) => a.order - b.order) || [];
     if (lessons.length === 0) return <p>No lessons available</p>;
 
-    let targetLessonId = lessons[0].id;
+    // تحديد الدرس الأول كافتراضي
+    targetLessonId = lessons[0].id;
 
     if (user) {
       const progressData = await getProgress(user.id, id);
-      if (progressData?.completedLessons?.length > 0) {
-        const completed = progressData.completedLessons;
+      const completed = progressData?.completedLessons || [];
+
+      if (completed.length > 0) {
         const lastCompletedId = completed[completed.length - 1];
         const currentIndex = lessons.findIndex(
           (l: any) => l.id === Number(lastCompletedId)
         );
+
         targetLessonId =
           currentIndex !== -1 && currentIndex < lessons.length - 1
             ? lessons[currentIndex + 1].id
             : lastCompletedId;
       }
     }
-
-    redirect(`/courses/${id}/lessons/${targetLessonId}`);
-  } catch (error: any) {
-    // هنا السر: اطبع الخطأ عشان تشوفه في الـ Runtime Logs في Vercel
-    console.error('CRITICAL_ERROR:', error.message);
-
+  } catch (error) {
+    console.error('Fetch Error:', error);
+    // لو حصل مشكلة في الداتا، اعرض رسالة الخطأ هنا
     return (
       <div className="flex flex-col justify-center items-center h-screen">
-        <h2 className="text-xl font-bold">Erorr in loading</h2>
-        <p className="text-sm text-gray-500">{error.message}</p>
+        <h2 className="text-xl font-bold">Opps</h2>
         <p>Please try again later.</p>
       </div>
     );
+  }
+
+  // 2. الـ Redirect لازم يكون بره الـ try/catch تماماً
+  if (targetLessonId) {
+    redirect(`/courses/${id}/lessons/${targetLessonId}`);
   }
 }
