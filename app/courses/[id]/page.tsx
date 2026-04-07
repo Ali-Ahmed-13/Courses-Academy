@@ -10,53 +10,69 @@ export default async function CoursePage({ params }: { params: any }) {
 
   // 1. تعريف متغيرات الداتا بره عشان نستخدمها بعد الـ try/catch
   let targetLessonId: string | number | null = null;
+  let hasError = false;
 
   try {
-    const [user, courses] = await Promise.all([currentUser(), fetchCourses()]);
+    const [user, courses] = await Promise.all([
+      currentUser(),
+      fetchCourses()
+    ]);
 
     if (!courses || !Array.isArray(courses)) {
-      return <div>عذراً، لا يمكن تحميل الكورسات حالياً.</div>;
-    }
+      hasError = true;
+    } else {
+      const course = courses.find((c: { id: number }) => c.id === parseInt(id));
 
-    const course = courses.find((c: { id: number }) => c.id === parseInt(id));
-    if (!course) notFound();
+      if (!course) {
+        notFound();
+      }
 
-    const lessons =
-      course?.lessons?.sort((a: any, b: any) => a.order - b.order) || [];
-    if (lessons.length === 0) return <p>No lessons available</p>;
+      const lessons = course?.lessons?.sort((a: any, b: any) => a.order - b.order) || [];
 
-    // تحديد الدرس الأول كافتراضي
-    targetLessonId = lessons[0].id;
+      if (lessons.length === 0) {
+        return <p className="p-10 text-center">No lessons available</p>;
+      }
 
-    if (user) {
-      const progressData = await getProgress(user.id, id);
-      const completed = progressData?.completedLessons || [];
+      // تحديد الدرس الأول كافتراضي
+      targetLessonId = lessons[0].id;
 
-      if (completed.length > 0) {
-        const lastCompletedId = completed[completed.length - 1];
-        const currentIndex = lessons.findIndex(
-          (l: any) => l.id === Number(lastCompletedId)
-        );
+      if (user) {
+        const progressData = await getProgress(user.id, id);
+        const completed = progressData?.completedLessons || [];
 
-        targetLessonId =
-          currentIndex !== -1 && currentIndex < lessons.length - 1
+        if (completed.length > 0) {
+          const lastCompletedId = completed[completed.length - 1];
+          const currentIndex = lessons.findIndex((l: any) => l.id === Number(lastCompletedId));
+
+          targetLessonId = (currentIndex !== -1 && currentIndex < lessons.length - 1)
             ? lessons[currentIndex + 1].id
             : lastCompletedId;
+        }
       }
     }
   } catch (error) {
-    console.error('Fetch Error:', error);
-    // لو حصل مشكلة في الداتا، اعرض رسالة الخطأ هنا
+    // لو الـ error سببه redirect سيبه يكمل طريقه (متمسكوش)
+    if (error instanceof Error && error.message === 'NEXT_REDIRECT') {
+      throw error;
+    }
+    console.error("Fetch Error:", error);
+    hasError = true;
+  }
+
+  // 2. معالجة حالة الخطأ الحقيقي (بعيداً عن الـ redirect)
+  if (hasError) {
     return (
       <div className="flex flex-col justify-center items-center h-screen">
-        <h2 className="text-xl font-bold">Opps</h2>
+        <h2 className="text-xl font-bold text-red-500">Opps</h2>
         <p>Please try again later.</p>
       </div>
     );
   }
 
-  // 2. الـ Redirect لازم يكون بره الـ try/catch تماماً
+  // 3. الـ Redirect النهائي (لازم يكون بره الـ try/catch)
   if (targetLessonId) {
     redirect(`/courses/${id}/lessons/${targetLessonId}`);
   }
+
+  return null;
 }
