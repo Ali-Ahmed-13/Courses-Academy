@@ -13,10 +13,7 @@ export default async function CoursePage({ params }: { params: any }) {
   let hasError = false;
 
   try {
-    const [user, courses] = await Promise.all([
-      currentUser(),
-      fetchCourses()
-    ]);
+    const [user, courses] = await Promise.all([currentUser(), fetchCourses()]);
 
     if (!courses || !Array.isArray(courses)) {
       hasError = true;
@@ -27,7 +24,8 @@ export default async function CoursePage({ params }: { params: any }) {
         notFound();
       }
 
-      const lessons = course?.lessons?.sort((a: any, b: any) => a.order - b.order) || [];
+      const lessons =
+        course?.lessons?.sort((a: any, b: any) => a.order - b.order) || [];
 
       if (lessons.length === 0) {
         return <p className="p-10 text-center">No lessons available</p>;
@@ -42,23 +40,35 @@ export default async function CoursePage({ params }: { params: any }) {
 
         if (completed.length > 0) {
           const lastCompletedId = completed[completed.length - 1];
-          const currentIndex = lessons.findIndex((l: any) => l.id === Number(lastCompletedId));
+          const currentIndex = lessons.findIndex(
+            (l: any) => l.id === Number(lastCompletedId)
+          );
 
-          targetLessonId = (currentIndex !== -1 && currentIndex < lessons.length - 1)
-            ? lessons[currentIndex + 1].id
-            : lastCompletedId;
+          targetLessonId =
+            currentIndex !== -1 && currentIndex < lessons.length - 1
+              ? lessons[currentIndex + 1].id
+              : lastCompletedId;
         }
       }
     }
-  } catch (error) {
-    // لو الـ error سببه redirect سيبه يكمل طريقه (متمسكوش)
-    if (error instanceof Error && error.message === 'NEXT_REDIRECT') {
-      throw error;
-    }
-    console.error("Fetch Error:", error);
-    hasError = true;
-  }
+  } catch (error: any) {
+    // تجاهل الـ Redirect لأنه مش خطأ
+    if (error.digest?.startsWith('NEXT_REDIRECT')) throw error;
 
+    console.error('DETAILED_ERROR:', error);
+
+    return (
+      <div className="flex flex-col justify-center items-center h-screen text-center p-5">
+        <h2 className="text-xl font-bold text-red-500">Opps! Details:</h2>
+        <pre className="bg-gray-100 p-4 mt-4 rounded text-xs overflow-auto max-w-full">
+          {error.message || 'Unknown Error'}
+        </pre>
+        <p className="mt-4">
+          تأكد من إضافة الـ Environment Variables في Vercel
+        </p>
+      </div>
+    );
+  }
   // 2. معالجة حالة الخطأ الحقيقي (بعيداً عن الـ redirect)
   if (hasError) {
     return (
