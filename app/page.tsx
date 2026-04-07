@@ -10,7 +10,7 @@ export async function getCourses() {
   });
 
   if (!res.ok) {
-    throw new Error('Erorr');
+    // throw new Error('Erorr');
   }
   return res.json();
 }
