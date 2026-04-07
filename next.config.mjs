@@ -1,19 +1,18 @@
-/** @type {import('next').Config} */
+/** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
     remotePatterns: [
       {
         protocol: 'https',
         hostname: 'img.youtube.com',
-        port: '',
         pathname: '/vi/**',
       },
     ],
   },
-  webpack: (config, options) => {
-    config.resolve.modules.push(path.join(__dirname, 'app'));
-    return config;
-  }
+  // ضيف دي عشان نكست 16 يعدي الـ Build بسلام
+  experimental: {
+    turbopack: {},
+  },
 };
 
 export default nextConfig;
